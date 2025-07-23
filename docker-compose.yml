@@ -95,20 +95,6 @@ services:
     networks:
       - yates-network
 
-  # API Gateway (opcional)
-  api-gateway:
-    image: openjdk:17-jdk-slim
-    build:
-      context: ./api-gateway # Asumiendo que tendrás un API Gateway
-    ports:
-      - "8080:8080"
-    depends_on:
-      - catalog-service
-      - booking-service
-      - user-service
-    networks:
-      - yates-network
-
 volumes:
   catalog-data:
   booking-data:

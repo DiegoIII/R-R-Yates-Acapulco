@@ -6,7 +6,7 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/user-service-*.jar ./user-service.jar
+COPY --from=build /app/target/service-0.0.1-SNAPSHOT.jar ./user-service.jar
 
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV DB_URL=jdbc:postgresql://user-db:5432/user_db

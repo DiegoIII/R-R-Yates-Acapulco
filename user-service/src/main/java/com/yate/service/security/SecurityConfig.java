@@ -18,8 +18,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtFilter jwtFilter;
+
     private final UserRepository userRepository;
+
+    @Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter(new JwtUtil(), userDetailsService(), userRepository);
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -46,7 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
                 .anyRequest().authenticated()
             .and()
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-} 
+}
