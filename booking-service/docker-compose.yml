@@ -1,0 +1,119 @@
+# docker-compose.yml
+version: "3.8"
+
+services:
+  # Servicio de catálogo
+  catalog-service:
+    build:
+      context: ./catalog-service
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+    networks:
+      - yates-network
+
+  catalog-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: catalog_db
+      POSTGRES_USER: catalog_user
+      POSTGRES_PASSWORD: catalog_pass
+    volumes:
+      - catalog-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catalog_user -d catalog_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - yates-network
+
+  # Servicio de reservas
+  booking-service:
+    build:
+      context: ./booking-service
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      booking-db:
+        condition: service_healthy
+      catalog-service:
+        condition: service_started
+    networks:
+      - yates-network
+
+  booking-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: booking_user
+      POSTGRES_PASSWORD: booking_pass
+    volumes:
+      - booking-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U booking_user -d booking_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - yates-network
+
+  # Servicio de usuarios
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JWT_SECRET: your_strong_jwt_secret_key_here
+    depends_on:
+      user-db:
+        condition: service_healthy
+    networks:
+      - yates-network
+
+  user-db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_pass
+    volumes:
+      - user-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_user -d user_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - yates-network
+
+  # API Gateway (opcional)
+  api-gateway:
+    image: openjdk:17-jdk-slim
+    build:
+      context: ./api-gateway # Asumiendo que tendrás un API Gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - catalog-service
+      - booking-service
+      - user-service
+    networks:
+      - yates-network
+
+volumes:
+  catalog-data:
+  booking-data:
+  user-data:
+
+networks:
+  yates-network:
+    driver: bridge
