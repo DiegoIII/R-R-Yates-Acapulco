@@ -6,13 +6,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.5.4</version>
-        <relativePath/> 
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.yate</groupId>
     <artifactId>service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>service</name>
-    <description>Servicio de reserva de yates</description>
+    <description>CRUD de servicio de usuario</description>
     <url/>
     <licenses>
         <license/>

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
     private final String SECRET_KEY = "mysecretkey123456";
-    private final long EXPIRATION = 1000 * 60 * 60 * 10; // 10 horas
+    private final long EXPIRATION = 1000 * 60 * 60 * 10;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
@@ -29,11 +29,11 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
-                .claims(claims) // Reemplaza setClaims()
-                .subject(subject) // Reemplaza setSubject()
-                .issuedAt(new Date(System.currentTimeMillis())) // Reemplaza setIssuedAt()
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION)) // Reemplaza setExpiration()
-                .signWith(getSigningKey()) // Reemplaza signWith() con SignatureAlgorithm
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -48,10 +48,10 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey()) // Reemplaza setSigningKey()
+                .verifyWith(getSigningKey())
                 .build()
-                .parseSignedClaims(token) // Reemplaza parseClaimsJws()
-                .getPayload(); // Reemplaza getBody()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public boolean isTokenValid(String token, User user) {
