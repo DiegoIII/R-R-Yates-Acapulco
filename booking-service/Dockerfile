@@ -6,7 +6,8 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/service-*.jar ./booking-service.jar
+# CAMBIO CLAVE AQUÍ: El nombre del JAR debe coincidir con el artifactId de tu pom.xml
+COPY --from=build /app/target/booking-service-*.jar ./booking-service.jar
 
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV DB_URL=jdbc:postgresql://booking-db:5432/booking_db
