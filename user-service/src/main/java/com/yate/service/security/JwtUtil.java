@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "mysecretkey123456";
+    private final String SECRET_KEY = "my-super-secret-jwt-key-that-is-very-long-and-secure-for-hmac-sha256-algorithm-minimum-256-bits";
     private final long EXPIRATION = 1000 * 60 * 60 * 10;
 
     private SecretKey getSigningKey() {

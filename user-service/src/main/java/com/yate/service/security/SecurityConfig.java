@@ -10,18 +10,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserRepository userRepository;
-
-    @Bean
-    public JwtFilter jwtFilter() {
-        return new JwtFilter(new JwtUtil(), userDetailsService(), userRepository);
-    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -42,12 +36,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable()) // Deshabilitar CORS temporalmente
+                .cors(cors -> cors.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/login", "/api/users/register").permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                        .anyRequest().authenticated());
+                // Removemos temporalmente el filtro JWT para debug
         return http.build();
     }
 }
